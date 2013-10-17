@@ -1,6 +1,7 @@
 #include "pebble_os.h"
 #include "pebble_app.h"
 #include "pebble_fonts.h"
+#include "words.h"
 
 
 #define MY_UUID { 0x24, 0x2B, 0x9F, 0x04, 0xCE, 0x2F, 0x41, 0xF5, 0xB5, 0xBD, 0xFF, 0xDD, 0x9A, 0x8F, 0x93, 0x28 }
@@ -10,60 +11,50 @@ PBL_APP_INFO(MY_UUID,
              DEFAULT_MENU_ICON,
              APP_INFO_WATCH_FACE);
 
-Window window;
+#define BUFFER_SIZE 86
 
-void handle_init(AppContextRef ctx) {
-  (void)ctx;
-  
-  window_init(&window, "Window Name");
-  window_stack_push(&window, true /* Animated */);
+static struct CommonData {
+	TextLayer label;
+	Window window;
+	char buffer[BUFFER_SIZE];
+} common;
+
+void update_time(PblTm* t) {
+	build_time_string(t->tm_hour, t->tm_min, common.buffer, BUFFER_SIZE);
+	text_layer_set_text(&common.label, common.buffer);
 }
 
-**char mstrings={
-	"",
-	"fem över",
-   	"tio över",
-   	"kvart över",
-	"tjugo över",
-   	"fem i halv",
-   	"halv",
-   	"fem över halv",
-   	"tjugo i",
-   	"kvart i",
-   	"tio i",
-   	"fem i"
-};
+void handle_init(AppContextRef ctx) {
+	
+  window_init(&common.window, "Fuzzy watchface");
+  const bool animated = true;
+  window_stack_push(&common.window, animated);
 
-**char hstrings={
-	"midnatt",
-   	"ett",
-   	"två",
-   	"tre",
-   	"fyra",
-   	"fem",
-   	"sex",
-   	"sju",
-   	"åtta",
-   	"nio",
-   	"tio",
-   	"elva",
-   	"tolv",
-};
+  window_set_background_color(&common.window, GColorBlack);
+  GFont font = fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK);
 
-**char hposts={
-   	"natten",
-   	"morgonen",
-   	"dagen",
-   	"kvällen"
-};
+  text_layer_init(&common.label, GRect(0, 5, common.window.layer.frame.size.w, common.window.layer.frame.size.h-5));
+  text_layer_set_background_color(&common.label, GColorBlack);
+  text_layer_set_text_color(&common.label, GColorWhite);
+  text_layer_set_font(&common.label, font);
+  layer_add_child(&common.window.layer, &common.label.layer);
+
+  PblTm t;
+  get_time(&t);
+  update_time(&t);
+}
+
+void handle_tick(AppContextRef ctx, PebbleTickEvent *event) {
+	update_time(event->tick_time);
+}
 
 void pbl_main(void *params) {
   PebbleAppHandlers handlers = {
-    .init_handler = &handle_init
+    .init_handler = &handle_init,
 	.tick_info = {
 		.tick_handler = &handle_tick,
 		.tick_units = MINUTE_UNIT
-	};
+	}
   };
   app_event_loop(params, &handlers);
 }
