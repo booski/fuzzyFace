@@ -49,12 +49,12 @@ static size_t append_string(char* buffer, const size_t length, const char* str) 
   return (length > written) ? written : length;
 }
 
-void build_time_string(int h, int m, char* buffer, size_t length) {
+void build_time_string(int h, int m, int s, char* buffer, size_t length) {
 	//DEBUG
 	//h=13;
 	//m=0;
 	//END DEBUG
-	int mmod = ((60 * m) + 150) / 300;
+	int mmod = ((60 * m) + s + 150) / 300;
 	int htemp = (mmod > 4) ? h += 1 : h;
 	int hmod = (htemp > 12) ? (htemp - 12) : htemp ;
 		
@@ -75,7 +75,7 @@ void build_time_string(int h, int m, char* buffer, size_t length) {
 	memset(buffer, 0, length);
 	
 	remain -= append_string(buffer, remain, INTRO);
-	if (mmod != 0) {
+	if (mmod != 0 && mmod < 12) {
 		remain -= append_string(buffer, remain, " ");
 		remain -= append_string(buffer, remain, mstrings[mmod]);
 	}

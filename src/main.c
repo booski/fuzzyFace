@@ -20,7 +20,7 @@ static struct CommonData {
 } common;
 
 void update_time(PblTm* t) {
-	build_time_string(t->tm_hour, t->tm_min, common.buffer, BUFFER_SIZE);
+	build_time_string(t->tm_hour, t->tm_min, t->tm_sec, common.buffer, BUFFER_SIZE);
 	text_layer_set_text(&common.label, common.buffer);
 }
 
