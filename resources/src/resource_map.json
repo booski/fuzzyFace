@@ -1,7 +1,7 @@
 {
     "media": [
         {
-            "defName": "RESOURCE_ID_IMAGE_MENU_ICON",
+            "defName": "IMAGE_MENU_ICON",
             "type": "png",
             "file": "images/SweFuzzy.png"
         }
