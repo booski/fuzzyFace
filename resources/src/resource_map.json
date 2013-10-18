@@ -1,9 +1,9 @@
 {
     "media": [
         {
-            "defName": "DUMMY",
-            "type": "raw",
-            "file": "resource_map.json"
+            "defName": "RESOURCE_ID_IMAGE_MENU_ICON",
+            "type": "png",
+            "file": "images/SweFuzzy.png"
         }
     ],
     "friendlyVersion": "VERSION",

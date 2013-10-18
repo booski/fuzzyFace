@@ -6,9 +6,9 @@
 
 #define MY_UUID { 0x24, 0x2B, 0x9F, 0x04, 0xCE, 0x2F, 0x41, 0xF5, 0xB5, 0xBD, 0xFF, 0xDD, 0x9A, 0x8F, 0x93, 0x28 }
 PBL_APP_INFO(MY_UUID,
-             "Fuzzy watchface", "Booski",
-             0, 1, /* App version */
-             DEFAULT_MENU_ICON,
+             "SweFuzzy", "Erik Thuning",
+             1, 0, /* App version */
+             RESOURCE_ID_IMAGE_MENU_ICON,
              APP_INFO_WATCH_FACE);
 
 #define BUFFER_SIZE 86
@@ -26,7 +26,7 @@ void update_time(PblTm* t) {
 
 void handle_init(AppContextRef ctx) {
 	
-  window_init(&common.window, "Fuzzy watchface");
+  window_init(&common.window, "SweFuzzy");
   const bool animated = true;
   window_stack_push(&common.window, animated);
 
