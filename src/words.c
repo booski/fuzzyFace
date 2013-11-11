@@ -55,15 +55,15 @@ void build_time_string(int h, int m, int s, char* buffer, size_t length) {
 	//m=0;
 	//END DEBUG
 	int mmod = ((60 * m) + s + 150) / 300;
-	int htemp = (mmod > 4) ? h += 1 : h;
+	int htemp = (mmod > 4) ? h + 1 : h;
 	int hmod = (htemp > 12) ? (htemp - 12) : htemp ;
 		
 	int spec;
-	if(h < 3 || h > 22) {
+	if(htemp < 3 || htemp > 22) {
 		spec = 0;
-	} else if(h < 11) {
+	} else if(htemp < 11) {
 		spec = 1;
-	} else if(h < 18) {
+	} else if(htemp < 18) {
 		spec = 2;
 	} else {
 		spec = 3;

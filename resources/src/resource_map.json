@@ -1,6 +1,11 @@
 {
     "media": [
         {
+            "defName": "ANONYMOUS_PRO_BOLD_28",
+            "type": "font",
+            "file": "fonts/Anonymous Pro B.ttf"
+        },
+        {
             "defName": "IMAGE_MENU_ICON",
             "type": "png",
             "file": "images/SweFuzzy.png"

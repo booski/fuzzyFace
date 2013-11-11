@@ -25,13 +25,15 @@ void update_time(PblTm* t) {
 }
 
 void handle_init(AppContextRef ctx) {
-	
+  
+  resource_init_current_app(&APP_RESOURCES);
+  
   window_init(&common.window, "SweFuzzy");
   const bool animated = true;
   window_stack_push(&common.window, animated);
 
   window_set_background_color(&common.window, GColorBlack);
-  GFont font = fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK);
+  GFont font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_ANONYMOUS_PRO_BOLD_28));
 
   text_layer_init(&common.label, GRect(0, 5, common.window.layer.frame.size.w, common.window.layer.frame.size.h-5));
   text_layer_set_background_color(&common.label, GColorBlack);
