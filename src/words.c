@@ -1,7 +1,7 @@
 #include "words.h"
 #include "string.h"
 
-static const char* const mstrings[]={
+static const char* const MSTRINGS[]={
 	"",
 	"fem över",
    	"tio över",
@@ -16,7 +16,7 @@ static const char* const mstrings[]={
    	"fem i"
 };
 
-static const char* const hstrings[]={
+static const char* const HSTRINGS[]={
 	"tolv",
    	"ett",
    	"två",
@@ -32,7 +32,7 @@ static const char* const hstrings[]={
    	"tolv",
 };
 
-static const char* const hposts[]={
+static const char* const HPOSTS[]={
    	"natten",
    	"morgonen",
    	"dagen",
@@ -42,6 +42,48 @@ static const char* const hposts[]={
 static const char* INTRO = "Klockan är";
 static const char* GLUE = " på ";
 
+/*
+static const char* const MSTRINGS_EN[]={
+	"",
+	"five past",
+	"ten past",
+	"quarter past",
+	"twenty past",
+	"twenty-five past",
+	"half past",
+	"twenty-five to",
+	"twenty to",
+	"quarter to",
+	"ten to",
+	"five to"
+};
+
+static const char* const HSTRINGS_EN[]={
+	"twelve",
+	"one",
+	"two",
+	"three",
+	"four",
+	"five",
+	"six",
+	"seven",
+	"eight",
+	"nine",
+	"ten",
+	"eleven",
+	"twelve"
+};
+
+static const char* const HPOSTS_EN[]={
+	"night",
+	"morning",
+	"day",
+	"evening"
+};
+
+static const char* INTRO_EN = "It is";
+static const char* GLUE_EN = " in the ";
+*/
 static size_t append_string(char* buffer, const size_t length, const char* str) {
   strncat(buffer, str, length);
 
@@ -77,11 +119,11 @@ void build_time_string(int h, int m, int s, char* buffer, size_t length) {
 	remain -= append_string(buffer, remain, INTRO);
 	if (mmod != 0 && mmod < 12) {
 		remain -= append_string(buffer, remain, " ");
-		remain -= append_string(buffer, remain, mstrings[mmod]);
+		remain -= append_string(buffer, remain, MSTRINGS[mmod]);
 	}
 	remain -= append_string(buffer, remain, " ");
-	remain -= append_string(buffer, remain, hstrings[hmod]);
+	remain -= append_string(buffer, remain, HSTRINGS[hmod]);
 	remain -= append_string(buffer, remain, GLUE);
-	remain -= append_string(buffer, remain, hposts[spec]);
+	remain -= append_string(buffer, remain, HPOSTS[spec]);
 	remain -= append_string(buffer, remain, ".");
 }
