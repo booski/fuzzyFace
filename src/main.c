@@ -12,6 +12,7 @@ TextLayer *time_label;
 TextLayer *date_label;
 char time_buffer[TIME_SIZE];
 char date_buffer[DATE_SIZE];
+int date;
 
 void update_time(int h, int m, int s) {
 	build_time_string(h, 
@@ -31,16 +32,20 @@ void update_date(int month, int day, int weekday) {
   text_layer_set_text(date_label, date_buffer);
 }
 
-void handle_time(struct tm *t, TimeUnits units_changed) {
+void update(struct tm *t, TimeUnits units_changed) {
   update_time(t->tm_hour, 
               t->tm_min, 
               t->tm_sec);
+  
+  if(t->tm_mday != date) {
+    date = t->tm_mday;
+    update_date(t->tm_mon,
+                t->tm_mday,
+                t->tm_wday);
+  }
 }
 
 void handle_date(struct tm *t, TimeUnits units_changed) {
-  update_date(t->tm_mon,
-              t->tm_mday,
-              t->tm_wday);
 }
 
 void handle_init(void) {
@@ -80,9 +85,10 @@ void handle_init(void) {
   //add datelabel to window
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(date_label));
   
-  //make sure time is shown immediately
+  //make sure time/date is shown immediately
   time_t now = time(NULL);
   struct tm *t = localtime(&now);
+  date = t->tm_mday;
   update_time(t->tm_hour, 
               t->tm_min, 
               t->tm_sec);
@@ -92,8 +98,7 @@ void handle_init(void) {
               t->tm_wday);
   
   //make sure that keeps happening
-  tick_timer_service_subscribe(MINUTE_UNIT, &handle_time);
-  tick_timer_service_subscribe(DAY_UNIT, &handle_date);
+  tick_timer_service_subscribe(MINUTE_UNIT, &update);
 }
 
 void handle_deinit(void) {
