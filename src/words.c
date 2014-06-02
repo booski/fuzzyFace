@@ -58,7 +58,7 @@ static const char* MONTHS[]={
 };
 
 static const char* DAYS[]={
-  "1",
+  "första",
   "andra",
   "tredje",
   "fjärde",
@@ -91,59 +91,6 @@ static const char* DAYS[]={
   "trettioförsta"
 };
 
-/*
-static const char* WEEKDAYS[]={
-  "Söndag",
-  "Måndag",
-  "Tisdag",
-  "Onsdag",
-  "Torsdag",
-  "Fredag",
-  "Lördag"
-};
-*/
-/*
-static const char* const MSTRINGS_EN[]={
-	"",
-	"five past",
-	"ten past",
-	"quarter past",
-	"twenty past",
-	"twenty-five past",
-	"half past",
-	"twenty-five to",
-	"twenty to",
-	"quarter to",
-	"ten to",
-	"five to"
-};
-
-static const char* const HSTRINGS_EN[]={
-	"twelve",
-	"one",
-	"two",
-	"three",
-	"four",
-	"five",
-	"six",
-	"seven",
-	"eight",
-	"nine",
-	"ten",
-	"eleven",
-	"twelve"
-};
-
-static const char* const HPOSTS_EN[]={
-	"night",
-	"morning",
-	"day",
-	"evening"
-};
-
-static const char* INTRO_EN = "It is";
-static const char* GLUE_EN = " in the ";
-*/
 static size_t append_string(char* buffer, const size_t free, const char* str) {
   strncat(buffer, str, free);
 
@@ -155,11 +102,12 @@ void build_time_string(int h, int m, int s, char* buffer, size_t length) {
 
   //DEBUG
 	//h=3;
-	//m=35;
+	//m=34;
+  //s=59;
 	//END DEBUG
   
-  //turn minutes into a value between 0 and 11
-	int mmod = ((60 * m) + s + 150) / 300;
+  //turn minutes into a value between 0 and 12.
+	int mmod = ((60 * m) + s + 299) / 300;
   
   //increment hour if minutes are in 'to' territory
 	int htemp = (mmod > 4) ? h + 1 : h;
@@ -206,10 +154,6 @@ void build_date_string(int month, int day, int weekday, char* buffer, size_t len
   
   size_t remain = length;
   memset(buffer, 0, length);
-  
-  //weekdays, too few pixels to fit. Kept for future.
-  //remain -= append_string(buffer, remain, WEEKDAYS[weekday]);
-  //remain -= append_string(buffer, remain, "en den ");
 
   remain -= append_string(buffer, remain, "Den ");
   remain -= append_string(buffer, remain, DAYS[day]);
