@@ -3,122 +3,20 @@
 
 static const char* const MINUTES[]={
 	"",
-	"fem över",
- 	"tio över",
- 	"kvart över",
-	"tjugo över",
- 	"fem i halv",
- 	"halv",
- 	"fem över halv",
- 	"tjugo i",
- 	"kvart i",
- 	"tio i",
- 	"fem i"
+	"five past",
+ 	"ten past",
+ 	"quarter past",
+	"twenty past",
+ 	"twenty-five past",
+ 	"half past",
+ 	"twenty-five to",
+ 	"twenty to",
+ 	"quarter to",
+ 	"ten to",
+ 	"five to"
 };
 
 static const char* const HOURS[]={
-	"tolv",
- 	"ett",
- 	"två",
-	"tre",
- 	"fyra",
- 	"fem",
- 	"sex",
- 	"sju",
- 	"åtta",
- 	"nio",
- 	"tio",
- 	"elva",
- 	"tolv",
-};
-
-static const char* const SUFFIXES[]={
- 	"natten",
- 	"morgonen",
- 	"dagen",
- 	"kvällen"
-};
-
-static const char* TIME_INTRO = "Klockan är";
-static const char* TIME_GLUE = " på ";
-
-static const char* MONTHS[]={
-  "janurari",
-  "februari",
-  "mars",
-  "april",
-  "maj",
-  "juni",
-  "juli",
-  "augusti",
-  "september",
-  "oktober",
-  "november",
-  "december"
-};
-
-static const char* DAYS[]={
-  "1",
-  "andra",
-  "tredje",
-  "fjärde",
-  "femte",
-  "sjätte",
-  "sjunde",
-  "åttonde",
-  "nionde",
-  "tionde",
-  "elfte",
-  "tolfte",
-  "trettonde",
-  "fjortonde",
-  "femtonde",
-  "sextonde",
-  "sjuttonde",
-  "artonde",
-  "nittonde",
-  "tjugonde",
-  "tjugoförsta",
-  "tjugoandra",
-  "tjugotredje",
-  "tjugofjärde",
-  "tjugofemte",
-  "tjugosjätte",
-  "tjugosjunde",
-  "tjugoåttonde",
-  "tjugonionde",
-  "trettionde",
-  "trettioförsta"
-};
-
-/*
-static const char* WEEKDAYS[]={
-  "Söndag",
-  "Måndag",
-  "Tisdag",
-  "Onsdag",
-  "Torsdag",
-  "Fredag",
-  "Lördag"
-};
-*/
-/*
-static const char* const MSTRINGS_EN[]={
-	"",
-	"five past",
-	"ten past",
-	"quarter past",
-	"twenty past",
-	"twenty-five past",
-	"half past",
-	"twenty-five to",
-	"twenty to",
-	"quarter to",
-	"ten to",
-	"five to"
-};
-
-static const char* const HSTRINGS_EN[]={
 	"twelve",
 	"one",
 	"two",
@@ -134,16 +32,64 @@ static const char* const HSTRINGS_EN[]={
 	"twelve"
 };
 
-static const char* const HPOSTS_EN[]={
-	"night",
-	"morning",
-	"day",
-	"evening"
+static const char* const SUFFIXES[]={
+ 	"at night",
+ 	"in the morning",
+ 	"in the day",
+ 	"in the evening"
 };
 
-static const char* INTRO_EN = "It is";
-static const char* GLUE_EN = " in the ";
-*/
+static const char* TIME_INTRO = "It is";
+
+static const char* MONTHS[]={
+  "Janurary",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
+};
+
+static const char* DAYS[]={
+  "first",
+  "second",
+  "third",
+  "fourth",
+  "fifth",
+  "sixth",
+  "seventh",
+  "eighth",
+  "ninth",
+  "tenth",
+  "eleventh",
+  "twelfth",
+  "thirteenth",
+  "fourteenth",
+  "fifteenth",
+  "sixteenth",
+  "seventeenth",
+  "eighteenth",
+  "nineteenth",
+  "twentieth",
+  "twentyfirst",
+  "twentysecond",
+  "twentythird",
+  "twentyfourth",
+  "twentyfifth",
+  "twentysixth",
+  "twentyseventh",
+  "twentyeighth",
+  "twentyninth",
+  "thirtieth",
+  "thirtyfirst"
+};
+
 static size_t append_string(char* buffer, const size_t free, const char* str) {
   strncat(buffer, str, free);
 
@@ -154,15 +100,15 @@ static size_t append_string(char* buffer, const size_t free, const char* str) {
 void build_time_string(int h, int m, int s, char* buffer, size_t length) {
 
   //DEBUG
-	//h=3;
-	//m=35;
+	//h=7;
+	//m=25;
 	//END DEBUG
   
-  //turn minutes into a value between 0 and 11
-	int mmod = ((60 * m) + s + 150) / 300;
+  //turn minutes into a value between 0 and 12.
+	int mmod = ((60 * m) + s + 299) / 300;
   
   //increment hour if minutes are in 'to' territory
-	int htemp = (mmod > 4) ? h + 1 : h;
+	int htemp = (mmod > 5) ? h + 1 : h;
   //make 12-hour time
 	int hmod = (htemp > 12) ? (htemp - 12) : htemp ;
 	
@@ -188,7 +134,7 @@ void build_time_string(int h, int m, int s, char* buffer, size_t length) {
 	}
 	remain -= append_string(buffer, remain, " ");
 	remain -= append_string(buffer, remain, HOURS[hmod]);
-	remain -= append_string(buffer, remain, TIME_GLUE);
+	remain -= append_string(buffer, remain, " ");
 	remain -= append_string(buffer, remain, SUFFIXES[suf]);
 	remain -= append_string(buffer, remain, ".");
 }
@@ -197,7 +143,7 @@ void build_date_string(int month, int day, int weekday, char* buffer, size_t len
   
   //DEBUG
   //month=8;
-  //day=31;
+  //day=27;
   //weekday=4;
   //END DEBUG
   
@@ -206,14 +152,9 @@ void build_date_string(int month, int day, int weekday, char* buffer, size_t len
   
   size_t remain = length;
   memset(buffer, 0, length);
-  
-  //weekdays, too few pixels to fit. Kept for future.
-  //remain -= append_string(buffer, remain, WEEKDAYS[weekday]);
-  //remain -= append_string(buffer, remain, "en den ");
 
-  remain -= append_string(buffer, remain, "Den ");
-  remain -= append_string(buffer, remain, DAYS[day]);
-  remain -= append_string(buffer, remain, " ");
   remain -= append_string(buffer, remain, MONTHS[month]);
+  remain -= append_string(buffer, remain, " ");
+  remain -= append_string(buffer, remain, DAYS[day]);
   remain -= append_string(buffer, remain, ".");
 }

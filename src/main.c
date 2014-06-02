@@ -66,7 +66,7 @@ void handle_init(void) {
   
   text_layer_set_background_color(time_label, GColorClear);
   text_layer_set_text_color(time_label, GColorWhite);
-  text_layer_set_font(time_label, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_ANONYMOUS_PRO_BOLD_28)));
+  text_layer_set_font(time_label, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_ANONYMOUS_PRO_BOLD_24)));
   
   //add timelabel to window
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(time_label));
