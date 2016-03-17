@@ -2,24 +2,26 @@
 #include <time.h>
 #include "words.h"
 
-
 #define TIME_SIZE 86
 #define DATE_SIZE 38
-#define SPLIT 18
+#define SPLIT 18	
 
 Window *window;
 TextLayer *time_label;
 TextLayer *date_label;
+
 char time_buffer[TIME_SIZE];
 char date_buffer[DATE_SIZE];
 int date;
 
+GFont font, smallfont, minifont;
+
 void update_time(int h, int m, int s) {
-	build_time_string(h, 
-                    m, 
-                    s, 
-                    time_buffer, 
-                    TIME_SIZE);
+	if(build_time_string(h,m,s,time_buffer,TIME_SIZE)){
+		text_layer_set_font(time_label, smallfont);	
+	}else{
+		text_layer_set_font(time_label, font);
+	}
 	text_layer_set_text(time_label, time_buffer);
 }
 
@@ -45,42 +47,50 @@ void update(struct tm *t, TimeUnits units_changed) {
   }
 }
 
-void handle_date(struct tm *t, TimeUnits units_changed) {
-}
-
 void handle_init(void) {
-
-  //window init
   window = window_create();
   window_stack_push(window, true);
-  window_set_background_color(window, GColorBlack);
-  
-  //get window bounds for future use
+	
+  #ifdef PBL_COLOR
+  window_set_background_color(window, GColorWhite );
+  #else
+   window_set_background_color(window, GColorWhite);
+  #endif
   GRect rect = layer_get_frame(window_get_root_layer(window));
   
   //timelabel init
-  time_label = text_layer_create(GRect(0, 
-                                       0, 
-                                       rect.size.w, 
-                                       rect.size.h-SPLIT));
-  
+  time_label = text_layer_create(GRect(0, 0, rect.size.w, rect.size.h-SPLIT));
+	
   text_layer_set_background_color(time_label, GColorClear);
-  text_layer_set_text_color(time_label, GColorWhite);
-  text_layer_set_font(time_label, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_ANONYMOUS_PRO_BOLD_28)));
+  #ifdef PBL_COLOR
+	text_layer_set_text_color(time_label, GColorBlack);
+  #else
+	text_layer_set_text_color(time_label, GColorBlack);
+  #endif
+  
+  font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TRAVELING_26));
+  smallfont = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TRAVELING_24));
+  text_layer_set_font(time_label, font);
   
   //add timelabel to window
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(time_label));
-  
+
   //datelabel init
-  date_label = text_layer_create(GRect(0,
-                                       rect.size.h-SPLIT,
-                                       rect.size.w,
-                                       SPLIT));
+  date_label = text_layer_create(GRect(0, rect.size.h-SPLIT, rect.size.w, SPLIT));
   
-  text_layer_set_background_color(date_label, GColorClear);
-  text_layer_set_text_color(date_label, GColorWhite);
+  
+  #ifdef PBL_COLOR
+	text_layer_set_background_color(date_label, GColorRed);
+	text_layer_set_text_color(date_label, GColorWhite);
+  #else
+	text_layer_set_background_color(date_label, GColorClear);
+	text_layer_set_text_color(date_label, GColorBlack);
+  #endif
   text_layer_set_text_alignment(date_label, GTextAlignmentCenter);
-  text_layer_set_font(date_label, fonts_get_system_font(FONT_KEY_FONT_FALLBACK));
+	
+  minifont = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TRAVELING_12));
+  //text_layer_set_font(date_label, fonts_get_system_font(FONT_KEY_FONT_FALLBACK));
+	text_layer_set_font(date_label, minifont);
   
   //add datelabel to window
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(date_label));
@@ -102,10 +112,9 @@ void handle_init(void) {
 }
 
 void handle_deinit(void) {
-  window_destroy(window);
   text_layer_destroy(time_label);
   text_layer_destroy(date_label);
-  tick_timer_service_unsubscribe();
+  window_destroy(window);
 }
 
 int main(void) {
