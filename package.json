@@ -1,0 +1,40 @@
+{
+    "author": "booski",
+    "dependencies": {},
+    "keywords": [],
+    "name": "swefuzzy",
+    "pebble": {
+        "capabilities": [
+            ""
+        ],
+        "displayName": "Fuzzy watchface, swedish",
+        "enableMultiJS": true,
+        "messageKeys": [],
+        "projectType": "native",
+        "resources": {
+            "media": [
+                {
+                    "file": "fonts/Anonymous Pro B.ttf",
+                    "name": "ANONYMOUS_PRO_BOLD_28",
+                    "targetPlatforms": null,
+                    "type": "font"
+                },
+                {
+                    "file": "images/SweFuzzy.png",
+                    "menuIcon": true,
+                    "name": "IMAGE_MENU_ICON",
+                    "type": "bitmap"
+                }
+            ]
+        },
+        "sdkVersion": "3",
+        "targetPlatforms": [
+            "basalt"
+        ],
+        "uuid": "09f248b6-f574-412b-a5c2-dba9bc8e0477",
+        "watchapp": {
+            "watchface": true
+        }
+    },
+    "version": "1.9.0"
+}

@@ -1,124 +1,134 @@
 #include <pebble.h>
-#include <time.h>
-#include "words.h"
+#include "update.h"
 
-#define TIME_SIZE 86
+#define TIME_SIZE 60
 #define DATE_SIZE 38
-#define SPLIT 18	
+#define SPLIT 18
 
-Window *window;
-TextLayer *time_label;
-TextLayer *date_label;
+static GFont time_font;
+static GFont date_font;
 
-char time_buffer[TIME_SIZE];
-char date_buffer[DATE_SIZE];
-int date;
+static Window *main_window;
+static TextLayer *time_layer;
+static TextLayer *date_layer;
 
-GFont font, smallfont, minifont;
+static char time_buffer[TIME_SIZE];
+static char date_buffer[DATE_SIZE];
 
-void update_time(int h, int m, int s) {
-	if(build_time_string(h,m,s,time_buffer,TIME_SIZE)){
-		text_layer_set_font(time_label, smallfont);	
-	}else{
-		text_layer_set_font(time_label, font);
-	}
-	text_layer_set_text(time_label, time_buffer);
+static const int text_color = 0xFFFFFF; //0xAAAAAA;
+static const int highlight_color = 0xFFFFFF;
+static const int BACKGROUND[]={
+   0x000000,
+   0x000055,
+   0x0000AA,
+   0x5500FF,
+   0x00AAFF
+};
+
+static void update(struct tm *t) {
+   int h = t->tm_hour;
+   int m = t->tm_min;
+   int s = t->tm_sec;
+   
+   int mon = t->tm_mon;
+   int day = t->tm_mday;
+   
+   update_time_buffer(h, m, s, time_buffer, TIME_SIZE);
+   
+   update_date_buffer(mon, day, date_buffer, DATE_SIZE);
+   
+   int bg_index;
+   if        (h < 2) {
+      bg_index = 0;
+   } else if (h < 5) {
+      bg_index = 1;
+   } else if (h < 8) {
+      bg_index = 2;
+   } else if (h < 11) {
+      bg_index = 3;
+   } else if (h < 14) {
+      bg_index = 4;
+   } else if (h < 17) {
+      bg_index = 3;
+   } else if (h < 20) {
+      bg_index = 2;
+   } else if (h < 23) {
+      bg_index = 1;
+   } else {
+      bg_index = 0;
+   }
+   
+   window_set_background_color(main_window, GColorFromHEX(BACKGROUND[bg_index]));
 }
 
-void update_date(int month, int day, int weekday) {
-  build_date_string(month,
-                    day, 
-                    weekday, 
-                    date_buffer, 
-                    DATE_SIZE);
-  text_layer_set_text(date_label, date_buffer);
+static void tick_handler(struct tm *t, TimeUnits units_changed) {
+   update(t);
 }
 
-void update(struct tm *t, TimeUnits units_changed) {
-  update_time(t->tm_hour, 
-              t->tm_min, 
-              t->tm_sec);
-  
-  if(t->tm_mday != date) {
-    date = t->tm_mday;
-    update_date(t->tm_mon,
-                t->tm_mday,
-                t->tm_wday);
-  }
+static void main_window_load(Window *window) {
+   // window setup
+   Layer *window_layer = window_get_root_layer(window);
+   GRect bounds = layer_get_bounds(window_layer);
+   
+   
+   // time setup
+   time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_ANONYMOUS_PRO_BOLD_28));
+   
+   time_layer = text_layer_create(
+      GRect(0, 0, bounds.size.w, bounds.size.h - SPLIT));
+   
+   text_layer_set_background_color(time_layer, GColorClear);
+   text_layer_set_text_color(time_layer, GColorFromHEX(text_color));
+   text_layer_set_font(time_layer, time_font);
+   text_layer_set_text(time_layer, time_buffer);
+   
+   layer_add_child(window_layer, text_layer_get_layer(time_layer));
+   
+   
+   // date setup
+   date_layer = text_layer_create(
+      GRect(0, bounds.size.h - SPLIT, bounds.size.w, bounds.size.h));
+   
+   text_layer_set_background_color(date_layer, GColorClear);
+   text_layer_set_text_color(date_layer, GColorFromHEX(text_color));
+   text_layer_set_font(date_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14));
+   text_layer_set_text_alignment(date_layer, GTextAlignmentCenter);
+   text_layer_set_text(date_layer, date_buffer);
+   
+   layer_add_child(window_layer, text_layer_get_layer(date_layer));
 }
 
-void handle_init(void) {
-  window = window_create();
-  window_stack_push(window, true);
-	
-  #ifdef PBL_COLOR
-  window_set_background_color(window, GColorWhite );
-  #else
-   window_set_background_color(window, GColorWhite);
-  #endif
-  GRect rect = layer_get_frame(window_get_root_layer(window));
-  
-  //timelabel init
-  time_label = text_layer_create(GRect(0, 0, rect.size.w, rect.size.h-SPLIT));
-	
-  text_layer_set_background_color(time_label, GColorClear);
-  #ifdef PBL_COLOR
-	text_layer_set_text_color(time_label, GColorBlack);
-  #else
-	text_layer_set_text_color(time_label, GColorBlack);
-  #endif
-  
-  font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TRAVELING_26));
-  smallfont = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TRAVELING_24));
-  text_layer_set_font(time_label, font);
-  
-  //add timelabel to window
-  layer_add_child(window_get_root_layer(window), text_layer_get_layer(time_label));
-
-  //datelabel init
-  date_label = text_layer_create(GRect(0, rect.size.h-SPLIT, rect.size.w, SPLIT));
-  
-  
-  #ifdef PBL_COLOR
-	text_layer_set_background_color(date_label, GColorRed);
-	text_layer_set_text_color(date_label, GColorWhite);
-  #else
-	text_layer_set_background_color(date_label, GColorClear);
-	text_layer_set_text_color(date_label, GColorBlack);
-  #endif
-  text_layer_set_text_alignment(date_label, GTextAlignmentCenter);
-	
-  minifont = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TRAVELING_12));
-  //text_layer_set_font(date_label, fonts_get_system_font(FONT_KEY_FONT_FALLBACK));
-	text_layer_set_font(date_label, minifont);
-  
-  //add datelabel to window
-  layer_add_child(window_get_root_layer(window), text_layer_get_layer(date_label));
-  
-  //make sure time/date is shown immediately
-  time_t now = time(NULL);
-  struct tm *t = localtime(&now);
-  date = t->tm_mday;
-  update_time(t->tm_hour, 
-              t->tm_min, 
-              t->tm_sec);
-  
-  update_date(t->tm_mon,
-              t->tm_mday,
-              t->tm_wday);
-  
-  //make sure that keeps happening
-  tick_timer_service_subscribe(MINUTE_UNIT, &update);
+static void main_window_unload(Window *window) {
+   text_layer_destroy(time_layer);
+   text_layer_destroy(date_layer);
+   
+   fonts_unload_custom_font(time_font);
 }
 
-void handle_deinit(void) {
-  text_layer_destroy(time_label);
-  text_layer_destroy(date_label);
-  window_destroy(window);
+static void init() {
+   main_window = window_create();
+   window_set_window_handlers(main_window, (WindowHandlers) {
+      .load = main_window_load,
+      .unload = main_window_unload
+   });
+   
+   // set current time and date on load
+   time_t now = time(NULL);
+   struct tm *t = localtime(&now);
+   update(t);
+   
+   // subscribe to time changes
+   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
+   
+   window_stack_push(main_window, true);
+}
+
+static void deinit() {
+   window_destroy(main_window);
 }
 
 int main(void) {
-  handle_init();
-  app_event_loop();
-  handle_deinit();
+   init();
+   app_event_loop();
+   deinit();
 }
