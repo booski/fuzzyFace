@@ -1,0 +1,42 @@
+{
+    "author": "booski",
+    "dependencies": {},
+    "keywords": [],
+    "name": "engfuzzy",
+    "pebble": {
+        "capabilities": [
+            ""
+        ],
+        "displayName": "Fuzzy watchface, english",
+        "enableMultiJS": true,
+        "messageKeys": [],
+        "projectType": "native",
+        "resources": {
+            "media": [
+                {
+                    "file": "images/engFuzzy.png",
+                    "menuIcon": true,
+                    "name": "IMAGE_MENU_ICON",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "fonts/Anonymous Pro B.ttf",
+                    "name": "ANONYMOUS_PRO_BOLD_24",
+                    "targetPlatforms": null,
+                    "type": "font"
+                }
+            ]
+        },
+        "sdkVersion": "3",
+        "targetPlatforms": [
+            "aplite",
+            "basalt"
+        ],
+        "uuid": "09f248b6-f574-412b-a5c2-dba9bc8e0477",
+        "watchapp": {
+            "watchface": true
+        }
+    },
+    "version": "2.0.0"
+}
