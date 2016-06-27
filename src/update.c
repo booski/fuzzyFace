@@ -26,11 +26,11 @@ void update_time_buffer(int h, int m, int s, char* buffer, size_t length) {
 	
    //set the time of day
 	int suf;
-	if(h < 3 || h > 22) { //natten
+	if(hmod < 3 || hmod > 22) { //natten
 		suf = 0;
-	} else if(h < 12) { 	 //morgonen
+	} else if(hmod < 11) { 	 //morgonen
 		suf = 1;
-	} else if(h < 18) { 	 //dagen
+	} else if(hmod < 17) { 	 //dagen
 		suf = 2;
 	} else { 				 //kvällen
 		suf = 3;

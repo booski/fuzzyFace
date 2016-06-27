@@ -29,6 +29,7 @@
         },
         "sdkVersion": "3",
         "targetPlatforms": [
+            "aplite",
             "basalt"
         ],
         "uuid": "09f248b6-f574-412b-a5c2-dba9bc8e0477",
@@ -36,5 +37,5 @@
             "watchface": true
         }
     },
-    "version": "1.9.0"
+    "version": "2.0.0"
 }

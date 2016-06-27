@@ -34,9 +34,9 @@ static void update(struct tm *t) {
    int day = t->tm_mday;
    
    update_time_buffer(h, m, s, time_buffer, TIME_SIZE);
-   
    update_date_buffer(mon, day, date_buffer, DATE_SIZE);
-   
+
+   /* The color choices are all ugly
    int bg_index;
    if        (h < 2) {
       bg_index = 0;
@@ -59,6 +59,10 @@ static void update(struct tm *t) {
    }
    
    window_set_background_color(main_window, GColorFromHEX(BACKGROUND[bg_index]));
+   */
+   text_layer_set_text(time_layer, time_buffer);
+   text_layer_set_text(date_layer, date_buffer);
+
 }
 
 static void tick_handler(struct tm *t, TimeUnits units_changed) {
@@ -69,13 +73,14 @@ static void main_window_load(Window *window) {
    // window setup
    Layer *window_layer = window_get_root_layer(window);
    GRect bounds = layer_get_bounds(window_layer);
-   
+   window_set_background_color(main_window, GColorFromHEX(0x000000));
+
    
    // time setup
    time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_ANONYMOUS_PRO_BOLD_28));
    
    time_layer = text_layer_create(
-      GRect(0, 0, bounds.size.w, bounds.size.h - SPLIT));
+      GRect(3, 0, bounds.size.w - 3, bounds.size.h - SPLIT));
    
    text_layer_set_background_color(time_layer, GColorClear);
    text_layer_set_text_color(time_layer, GColorFromHEX(text_color));
@@ -111,6 +116,7 @@ static void init() {
       .load = main_window_load,
       .unload = main_window_unload
    });
+   window_stack_push(main_window, true);
    
    // set current time and date on load
    time_t now = time(NULL);
@@ -120,7 +126,6 @@ static void init() {
    // subscribe to time changes
    tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
    
-   window_stack_push(main_window, true);
 }
 
 static void deinit() {
