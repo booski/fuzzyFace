@@ -18,20 +18,20 @@ void update_time_buffer(int h, int m, int s, char* buffer, size_t length) {
    // END DEBUG
    
    //turn minutes into a value between 0 and 11
-	int mmod = ((60 * m) + s + 150) / 300;
+	int mmod = ((60 * m) + s + 299) / 300;
   
    //increment hour if minutes are in 'to' territory
-	int htemp = (mmod > 4) ? h + 1 : h;
+	int htemp = (mmod > 6) ? h + 1 : h;
    //make 12-hour time
 	int hmod = (htemp > 12) ? (htemp - 12) : htemp ;
 	
    //set the time of day
 	int suf;
-	if(hmod < 3 || hmod > 22) { //night
+	if(h < 3 || h > 22) { //night
 		suf = 0;
-	} else if(hmod < 11) { 	 //morning
+	} else if(h < 11) { 	 //morning
 		suf = 1;
-	} else if(hmod < 17) { 	 //day
+	} else if(h < 17) { 	 //day
 		suf = 2;
 	} else { 				 //evening
 		suf = 3;
