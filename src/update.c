@@ -12,12 +12,12 @@ static size_t append_string(char* buffer, const size_t free, const char* str) {
 void update_time_buffer(int h, int m, int s, char* buffer, size_t length) {   
    // DEBUG
    //h = 3;
-   //m = 34;
-   //s = 0;
+   //m = 30;
+   //s = 1;
    // END DEBUG
    
    //turn minutes into a value between 0 and 11
-	int mmod = ((60 * m) + s + 150) / 300;
+	int mmod = ((60 * m) + s + 299) / 300;
   
    //increment hour if minutes are in 'to' territory
 	int htemp = (mmod > 4) ? h + 1 : h;
@@ -26,11 +26,11 @@ void update_time_buffer(int h, int m, int s, char* buffer, size_t length) {
 	
    //set the time of day
 	int suf;
-	if(hmod < 3 || hmod > 22) { //natten
+	if(h < 3 || h > 22) { //natten
 		suf = 0;
-	} else if(hmod < 11) { 	 //morgonen
+	} else if(h < 11) { 	 //morgonen
 		suf = 1;
-	} else if(hmod < 17) { 	 //dagen
+	} else if(h < 17) { 	 //dagen
 		suf = 2;
 	} else { 				 //kvällen
 		suf = 3;
